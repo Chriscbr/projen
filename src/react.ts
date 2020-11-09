@@ -74,8 +74,10 @@ export class ReactTypeScriptProject extends TypeScriptAppProject {
       srcdir: 'src',
       eslint: false,
       jest: false,
+      ...options,
       tsconfig: {
         include: ['src'],
+        ...options.tsconfig,
         compilerOptions: {
           target: 'es5',
           lib: [
@@ -100,9 +102,7 @@ export class ReactTypeScriptProject extends TypeScriptAppProject {
           // user-specified overrides
           ...options.tsconfig?.compilerOptions,
         },
-        ...options.tsconfig,
       },
-      ...options,
       typescriptVersion: options.typescriptVersion ?? Semver.caret('4.0.3'),
 
       // never generate default TypeScript sample code, since this class provides its own

@@ -92,8 +92,10 @@ export class NextJsTypeScriptProject extends TypeScriptAppProject {
       srcdir: 'pages',
       eslint: false,
       jest: false,
+      ...options,
       tsconfig: {
         include: ['**/*.ts', '**/*.tsx'],
+        ...options.tsconfig,
         compilerOptions: {
           // required by Next.js
           esModuleInterop: true,
@@ -115,9 +117,7 @@ export class NextJsTypeScriptProject extends TypeScriptAppProject {
           // user-specified overrides
           ...options.tsconfig?.compilerOptions,
         },
-        ...options.tsconfig,
       },
-      ...options,
 
       // never generate default TypeScript sample code, since this class provides its own
       sampleCode: false,
