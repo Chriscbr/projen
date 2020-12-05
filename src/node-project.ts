@@ -1672,6 +1672,8 @@ export class NodeProject extends Project {
       preCheckoutSteps: [
         postComment('Rebuild started'),
       ],
+
+      // checkout branch
       checkoutWith: {
         ref: '${{ github.event.pull_request.head.sha }}',
       },
