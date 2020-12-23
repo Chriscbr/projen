@@ -35,9 +35,13 @@ const project = new JsiiProject({
   codeCov: true,
   compileBeforeTest: true, // since we want to run the cli in tests
   gitpod: true,
+  devContainer: true,
   // since this is projen, we need to always compile before we run
   projenCommand: '/bin/bash ./projen.bash',
 });
+
+project.devContainer.addTasks(project.buildTask);
+project.devContainer.addVscodeExtensions('dbaeumer.vscode-eslint');
 
 // this script is what we use as the projen command in this project
 // it will compile the project if needed and then run the cli.
