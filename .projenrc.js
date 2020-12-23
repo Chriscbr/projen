@@ -40,7 +40,11 @@ const project = new JsiiProject({
   projenCommand: '/bin/bash ./projen.bash',
 });
 
-project.devContainer.addTasks(project.buildTask);
+const devcontainerSetup = project.addTask('devcontainer:setup');
+devcontainerSetup.exec('yarn install');
+devcontainerSetup.spawn(project.buildTask);
+
+project.devContainer.addTasks(devcontainerSetup);
 project.devContainer.addVscodeExtensions('dbaeumer.vscode-eslint');
 
 // this script is what we use as the projen command in this project

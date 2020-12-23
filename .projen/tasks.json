@@ -186,6 +186,17 @@
         }
       ]
     },
+    "devcontainer:setup": {
+      "name": "devcontainer:setup",
+      "steps": [
+        {
+          "exec": "yarn install"
+        },
+        {
+          "spawn": "build"
+        }
+      ]
+    },
     "readme-macros": {
       "name": "readme-macros",
       "steps": [
