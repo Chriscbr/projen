@@ -2,6 +2,179 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.16.0](https://github.com/projen/projen/compare/v0.3.92...v0.16.0) (2021-01-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* `GithubWorkflow` no longer extends `FileBase`. Use `workflow.file` instead to access file properties.
+* **project** `project.tryFindJsonFile()` is now deprecated. Use `tryFindObjectFile()` instead.
+* **project** The `obj` field on files is now private. Use `file.addOverride()` to make changes instead.
+* the `java` option in jsii projects is now called `publishToMaven`.
+* **node:** The `libdir`, `srcdir` and `testdir` options are no longer available in `NodeProject`. Instead they are available in specific project types like typescript, nextjs and react.
+* the `name` option is now required for all project types.
+* **node:** `Version.resolveVersion(outdir)` is now `Version.version`.
+* `NodeProjectCommonOptions` is now `NodePackageOptions`.
+* all deprecated `dependencies` APIs have been removed.
+
+```
+warn - PROP projen.NodeProjectCommonOptions.bundledDependencies: has been removed [removed:projen.NodeProjectCommonOptions.bundledDependencies]
+warn - PROP projen.NodeProjectCommonOptions.dependencies: has been removed [removed:projen.NodeProjectCommonOptions.dependencies]
+warn - PROP projen.NodeProjectCommonOptions.devDependencies: has been removed [removed:projen.NodeProjectCommonOptions.devDependencies]
+warn - PROP projen.NodeProjectCommonOptions.peerDependencies: has been removed [removed:projen.NodeProjectCommonOptions.peerDependencies]
+warn - PROP projen.NodeProjectOptions.bundledDependencies: has been removed [removed:projen.NodeProjectOptions.bundledDependencies]
+warn - PROP projen.NodeProjectOptions.dependencies: has been removed [removed:projen.NodeProjectOptions.dependencies]
+warn - PROP projen.NodeProjectOptions.devDependencies: has been removed [removed:projen.NodeProjectOptions.devDependencies]
+warn - PROP projen.NodeProjectOptions.peerDependencies: has been removed [removed:projen.NodeProjectOptions.peerDependencies]
+```
+* **node:** `bootstrapTask` is no longer available. To obtain the bootstrapping steps for GitHub workflows, use `installWorkflowSteps`.
+* **node:** the `workflowBootstrapSteps` is no longer available. The equivalent is `[ { uses: 'actions/checkout@v2' }, project.installWorkflowSteps ]`.
+* **node:** the `NodeBuildWorkflowOptions` struct is no now internal.
+* there are multiple breaking changes in in how github components are used.
+* The `CompositeProject` and `ProjectComponent` classes have been superseded by subprojects in order to allow safely accessing the parent project during subproject initialization phase. Use `new Project({ parent, outdir })` to define this relationship.
+* The various `synth()` methods no longer accept an `outdir`. Instead, specify `outdir` in the project options.
+* `node.addScript(script, command)` now takes a single command instead of variable arguments. Use `node.addScript(script, [s1,s2].join(' && '))` to build a command from multiple statements.
+
+### Features
+
+* **awscdk-construct:** documentation ([#179](https://github.com/projen/projen/issues/179)) ([4624e36](https://github.com/projen/projen/commit/4624e362047ff055f7dac306038ec01c72f50e85))
+* **cli:** add switch for post-synthesis operations ([#339](https://github.com/projen/projen/issues/339)) ([08dbee1](https://github.com/projen/projen/commit/08dbee185881ff87761c1c848b5db926d9e3be34)), closes [#322](https://github.com/projen/projen/issues/322)
+* **cli:** allow specifying the location of `.projenrc.js` using `--rc` ([#440](https://github.com/projen/projen/issues/440)) ([738575a](https://github.com/projen/projen/commit/738575acc0a92ae924c3216fdc9ff1220edf4a06))
+* **cli:** improved bootstrapping ([#459](https://github.com/projen/projen/issues/459)) ([d641f1c](https://github.com/projen/projen/commit/d641f1cbc387e9bbed160319851e00317d8d1360))
+* **eslint:** add file extension and ignore pattern options ([#288](https://github.com/projen/projen/issues/288)) ([ebe65fa](https://github.com/projen/projen/commit/ebe65fa0c7e0dfe19662248f7095e78fa32ad1f9))
+* **eslint:** devdirs ([#445](https://github.com/projen/projen/issues/445)) ([7f30aae](https://github.com/projen/projen/commit/7f30aae0709e589a0918b5d07cb11f9cd2ddb82a))
+* **github:** skip creating GitHub workflows by default for subprojects ([#382](https://github.com/projen/projen/issues/382)) ([a08e3d8](https://github.com/projen/projen/commit/a08e3d89fec97a813be94041d503a49a1df5b199))
+* **gitignore:** dedup repeated IgnoreFile entries ([#395](https://github.com/projen/projen/issues/395)) ([fad18db](https://github.com/projen/projen/commit/fad18db9e7b8bc675fe9d54e5e190ec8054e55f8)), closes [#392](https://github.com/projen/projen/issues/392)
+* **gitpod:** Support Gitpod ([#360](https://github.com/projen/projen/issues/360)) ([8be15d6](https://github.com/projen/projen/commit/8be15d60ee5a5738c3a851c87a507ce8a5de9ac6))
+* **java:** projenrc.java ([#470](https://github.com/projen/projen/issues/470)) ([9d099f6](https://github.com/projen/projen/commit/9d099f6fe5d30f8d107189f4fa6c97f85711e3cb))
+* **java:** rename `MavenProject` to `JavaProject` (pjid `java`) ([#464](https://github.com/projen/projen/issues/464)) ([a6cf0e3](https://github.com/projen/projen/commit/a6cf0e37910a62ded51ed8d6dccbc5210990b1fa))
+* **java:** sub-dependencies for maven plugins ([#469](https://github.com/projen/projen/issues/469)) ([e1dc5b8](https://github.com/projen/projen/commit/e1dc5b89f3f8a2687ea00e043c2aac2d5e05b252))
+* **jest:** addTestMatch() ([#444](https://github.com/projen/projen/issues/444)) ([a85dae2](https://github.com/projen/projen/commit/a85dae2212d7fd7f387f8552128a137610fc7a09))
+* **jest:** coverage text output and watch ignore patterns ([#461](https://github.com/projen/projen/issues/461)) ([3004750](https://github.com/projen/projen/commit/30047506f5fd1a60bccc507a64acc03fd82fbb14))
+* **jest:** test results processing ([#279](https://github.com/projen/projen/issues/279)) ([453ad63](https://github.com/projen/projen/commit/453ad63194cfd4862ef624401cf80aa57ba61db6)), closes [#278](https://github.com/projen/projen/issues/278)
+* **jest/typescript:** `test:compile` task ([#401](https://github.com/projen/projen/issues/401)) ([bcce2f5](https://github.com/projen/projen/commit/bcce2f51a4695f552f9e9102301553e3e794c498))
+* **jsii:** allowing twine registry to be set ([#140](https://github.com/projen/projen/issues/140)) ([5b0918c](https://github.com/projen/projen/commit/5b0918c99e64d859ca737a6a9ff432857f43906a)), closes [#124](https://github.com/projen/projen/issues/124)
+* **jsii:** support publishing maven artifacts to github ([#363](https://github.com/projen/projen/issues/363)) ([e11996c](https://github.com/projen/projen/commit/e11996c4cbf7ec00f7a2ce7ba88bb97098fad9fa)), closes [#355](https://github.com/projen/projen/issues/355)
+* **license:** add flag to skip adding license ([#282](https://github.com/projen/projen/issues/282)) ([b3c3000](https://github.com/projen/projen/commit/b3c30007504e6764ee402c40d154606c0f1aa78d)), closes [#122](https://github.com/projen/projen/issues/122)
+* **license:** adds some common licenses ([#264](https://github.com/projen/projen/issues/264)) ([20615c3](https://github.com/projen/projen/commit/20615c3637fa82b802b68aca70513893b8b06343))
+* **makefile:** add support for makefiles ([#199](https://github.com/projen/projen/issues/199)) ([35406a9](https://github.com/projen/projen/commit/35406a9f17e6e93c3eff0636e8091704fa6340d4))
+* **nextjs:** add support for nextjs projects ([#167](https://github.com/projen/projen/issues/167)) ([2613604](https://github.com/projen/projen/commit/261360425a1cd24ecaad28b9abaa98dab26d710e)), closes [#158](https://github.com/projen/projen/issues/158)
+* **nextjs:** add tailwindcss option ([#326](https://github.com/projen/projen/issues/326)) ([e02eb65](https://github.com/projen/projen/commit/e02eb650256b2a3f6421b42629ed8e5e4d654642)), closes [#325](https://github.com/projen/projen/issues/325)
+* **node:** add name to bump step in release workflow ([c5e9ee2](https://github.com/projen/projen/commit/c5e9ee2a88669fb4e0dd20609428c5c8516a7bd6))
+* **node:** deprecate "xxxDependencies" in favor of "xxxDeps" (warning) ([a9f3890](https://github.com/projen/projen/commit/a9f3890fbabcb12db3b4ee30d1d1327ef3dca3ff))
+* **node:** extract `NodePackage` from `NodeProject` ([#421](https://github.com/projen/projen/issues/421)) ([b4a57e8](https://github.com/projen/projen/commit/b4a57e80580d0287838c4d6223ac91aad3267e39))
+* **node:** projen upgrade schedule ([#155](https://github.com/projen/projen/issues/155)) ([16169b8](https://github.com/projen/projen/commit/16169b8f5b978bd15a0fe3126b5a93f9de7dc016)), closes [eladb/projen#153](https://github.com/eladb/projen/issues/153)
+* **node:** rebuild bot ([#349](https://github.com/projen/projen/issues/349)) ([b891fb7](https://github.com/projen/projen/commit/b891fb7cf8720b862142d5451f5c6b697aa8d50c))
+* **node:** support 'npm' as a package manager ([#157](https://github.com/projen/projen/issues/157)) ([f2a03d3](https://github.com/projen/projen/commit/f2a03d3b1f554df41142112d03f6c55786258a75)), closes [#156](https://github.com/projen/projen/issues/156)
+* add .idea to .npmignore for webstorm developers ([#236](https://github.com/projen/projen/issues/236)) ([4e6382a](https://github.com/projen/projen/commit/4e6382afe12269337e62cd775739c94b6cebbacb)), closes [#222](https://github.com/projen/projen/issues/222)
+* add full jest config support ([#331](https://github.com/projen/projen/issues/331)) ([a3d1ed0](https://github.com/projen/projen/commit/a3d1ed09a038f45385546dadbe182b6f268ce042)), closes [#320](https://github.com/projen/projen/issues/320) [/github.com/facebook/jest/blob/master/packages/jest-types/src/Config.ts#L118](https://github.com/projen//github.com/facebook/jest/blob/master/packages/jest-types/src/Config.ts/issues/L118) [#320](https://github.com/projen/projen/issues/320)
+* add line endings to files ([#486](https://github.com/projen/projen/issues/486)) ([bbb7518](https://github.com/projen/projen/commit/bbb7518f204c99a38957c9a1dd876c627054a469))
+* add pnpm support ([#425](https://github.com/projen/projen/issues/425)) ([6b3cbb2](https://github.com/projen/projen/commit/6b3cbb279bfdd78eb6f2b404d4cf6b55f9bd8523)), closes [#420](https://github.com/projen/projen/issues/420)
+* add support for docker-compose.yml ([#230](https://github.com/projen/projen/issues/230)) ([f385c45](https://github.com/projen/projen/commit/f385c4538ffb13b53cbd18c64722cf9ea83caa5b))
+* Add version pinning option to construct project ([#340](https://github.com/projen/projen/issues/340)) ([a6dc7cb](https://github.com/projen/projen/commit/a6dc7cb0b990178082acec2bb3b51857034eb79b))
+* Add VSCodeLaunchConfiguration ([#316](https://github.com/projen/projen/issues/316)) ([83b30cc](https://github.com/projen/projen/commit/83b30cc139aa7c2ee1911c61a6bf20912b460b85)), closes [#314](https://github.com/projen/projen/issues/314)
+* allow text file to be marked as executable ([#458](https://github.com/projen/projen/issues/458)) ([5a9ba5e](https://github.com/projen/projen/commit/5a9ba5eacc44ddfb6c624db3a69e0369946b003b)), closes [#454](https://github.com/projen/projen/issues/454)
+* auto-merge ([#423](https://github.com/projen/projen/issues/423)) ([d0d693b](https://github.com/projen/projen/commit/d0d693b50337227c4fc75df7f885ca2d6ce5a8fe))
+* codecov.io ([#266](https://github.com/projen/projen/issues/266)) ([24f2dc6](https://github.com/projen/projen/commit/24f2dc603719af4526cbb1358078a769920fb7b6))
+* consolidate github capabilities behind a centralized api ([#319](https://github.com/projen/projen/issues/319)) ([19815c1](https://github.com/projen/projen/commit/19815c19c8aa6185311dd2851510c7bb91abb120)), closes [#318](https://github.com/projen/projen/issues/318)
+* create github repository ([#336](https://github.com/projen/projen/issues/336)) ([5590e08](https://github.com/projen/projen/commit/5590e0838b202de1902f1ab697be5296192bb85d)), closes [#310](https://github.com/projen/projen/issues/310)
+* DevContainer component ([#391](https://github.com/projen/projen/issues/391)) ([d482b7d](https://github.com/projen/projen/commit/d482b7d80a3b878e417f5e9dc4c15f62017fcad2)), closes [#362](https://github.com/projen/projen/issues/362)
+* do not produce empty `deps.json` and `tasks.json` files ([#462](https://github.com/projen/projen/issues/462)) ([7a079ea](https://github.com/projen/projen/commit/7a079ea897a78a0771325cf7ade49c83cc49e5ad))
+* expose all `SampleFile` options for `SampleReadme` in the constructor ([#414](https://github.com/projen/projen/issues/414)) ([81c837b](https://github.com/projen/projen/commit/81c837bfccac963adc46293a8e837f1bda235c3c)), closes [#407](https://github.com/projen/projen/issues/407)
+* initialize projenrc.js with commented options ([#227](https://github.com/projen/projen/issues/227)) ([b868fa3](https://github.com/projen/projen/commit/b868fa3e2612e74accba1ed497102642364a65a5)), closes [#168](https://github.com/projen/projen/issues/168)
+* introduce CompositeProject ([#289](https://github.com/projen/projen/issues/289)) ([d606b3d](https://github.com/projen/projen/commit/d606b3def0cace2ea59c4be6624b9d4564f809f8)), closes [#284](https://github.com/projen/projen/issues/284)
+* java maven project ([#460](https://github.com/projen/projen/issues/460)) ([9f94054](https://github.com/projen/projen/commit/9f940549863aa9076f63aceefe46953d8360ef0e))
+* lint .projenrc.js ([#343](https://github.com/projen/projen/issues/343)) ([1f39d12](https://github.com/projen/projen/commit/1f39d12d6d31b5d63540a5b5882dc98e5411b959))
+* logging options in Project ([#439](https://github.com/projen/projen/issues/439)) ([a1b3d93](https://github.com/projen/projen/commit/a1b3d936d947a9fa9baf9933c60d505f5f36e033)), closes [#375](https://github.com/projen/projen/issues/375)
+* make `projen start` interactive by default ([#431](https://github.com/projen/projen/issues/431)) ([8205707](https://github.com/projen/projen/commit/82057078c9ab5af34b0f0047ed98c3d076a0afcc)), closes [#429](https://github.com/projen/projen/issues/429)
+* Make IgnoreFile stateful to allow for overrides ([#435](https://github.com/projen/projen/issues/435)) ([6667980](https://github.com/projen/projen/commit/666798058e42cba5f4662462c03271347f3c33d4))
+* npmignore .projen and test reports ([#430](https://github.com/projen/projen/issues/430)) ([ced3d40](https://github.com/projen/projen/commit/ced3d402d13326cccc5168203355cf67ae80eda3))
+* prefer ts files for ts-node ([#308](https://github.com/projen/projen/issues/308)) ([4dd57aa](https://github.com/projen/projen/commit/4dd57aa59c7df7c6a7dd127b542a44067af0a733))
+* project dependencies ([#390](https://github.com/projen/projen/issues/390)) ([6463c0e](https://github.com/projen/projen/commit/6463c0edca9e538b77f5e4814d8a15154167aec2))
+* project name ([#422](https://github.com/projen/projen/issues/422)) ([e4514e8](https://github.com/projen/projen/commit/e4514e8d36c347078cb32e990f7efe9552af328e)), closes [#367](https://github.com/projen/projen/issues/367)
+* projects from external modules (--from) ([#212](https://github.com/projen/projen/issues/212)) ([abae45f](https://github.com/projen/projen/commit/abae45f8a56cadc2e9651c68be2568dd430f833e))
+* projen logo ([#441](https://github.com/projen/projen/issues/441)) ([7be2d61](https://github.com/projen/projen/commit/7be2d61017be89d43cda6ffea242e0d59e25289f))
+* projen tasks ([#337](https://github.com/projen/projen/issues/337)) ([9511227](https://github.com/projen/projen/commit/95112272c2b192144293c1064c77b2d8da354b8f))
+* publish projen to maven and pypi ([#466](https://github.com/projen/projen/issues/466)) ([5bdb9dc](https://github.com/projen/projen/commit/5bdb9dce8589a356e088cd746629ed2724ea55c7))
+* pull request templates ([518c9e7](https://github.com/projen/projen/commit/518c9e7b00452dc941a9a0f6fd62f93b7f0d625e))
+* README samples ([#203](https://github.com/projen/projen/issues/203)) ([28e85dc](https://github.com/projen/projen/commit/28e85dc54d5900b8802a3de9d60ebc8252caae9e))
+* README samples (again) ([#276](https://github.com/projen/projen/issues/276)) ([1a34ca8](https://github.com/projen/projen/commit/1a34ca81602a01cc46193a9eae1d062e78e218cf))
+* snapshot test utility ([4650460](https://github.com/projen/projen/commit/46504603ffea87bb75c02111f39a3fa949384e68))
+* **tasks:** say() ([90ef9fe](https://github.com/projen/projen/commit/90ef9fe4895bbc473fdf7bce5cbb245257f8f7be))
+* standard escape hatches ([#495](https://github.com/projen/projen/issues/495)) ([6356371](https://github.com/projen/projen/commit/6356371b7e5a1cb57e79c037a765232d91c4cd5a))
+* subprojects ([#332](https://github.com/projen/projen/issues/332)) ([53244ae](https://github.com/projen/projen/commit/53244aef42258344c90e5f08241cb61c2e4566b6)), closes [#289](https://github.com/projen/projen/issues/289)
+* TextFile component ([e1db26c](https://github.com/projen/projen/commit/e1db26c843fdd35aae61c5e27e30d1e6b8f99e48))
+* typescript nextjs projects ([#197](https://github.com/projen/projen/issues/197)) ([68e5206](https://github.com/projen/projen/commit/68e5206ab781a2dee68394f6ccb106b986262234))
+* updates to awscdk-construct documentation ([3ae3e09](https://github.com/projen/projen/commit/3ae3e0996259356515d37d8fefcae58b83525d11))
+* xml file ([#463](https://github.com/projen/projen/issues/463)) ([de8a688](https://github.com/projen/projen/commit/de8a688137d5dde9cfe084c3e997472c9001fde1))
+* **project:** support optional readme option ([#394](https://github.com/projen/projen/issues/394)) ([50ede3e](https://github.com/projen/projen/commit/50ede3e44ac655552e0eb234bfdfaf120321224a)), closes [#393](https://github.com/projen/projen/issues/393)
+* **scripts:** adds `destroy` -> cdk destroy for awscdk-app-ts ([#248](https://github.com/projen/projen/issues/248)) ([bd56136](https://github.com/projen/projen/commit/bd56136f2d8facd770673db09efadf8f62a3ea52))
+* **task:** additional prepend methods ([#426](https://github.com/projen/projen/issues/426)) ([dfa2064](https://github.com/projen/projen/commit/dfa20646abee57bf16c581df496831e68dd86613))
+* **tasks:** clobber ([304e4a1](https://github.com/projen/projen/commit/304e4a1c82aac00f23264b3925e68ae053f01c95))
+* **tasks:** cwd ([08c08d3](https://github.com/projen/projen/commit/08c08d3ecb47c8e2ab2e0c1570ab3f1e27776e80)), closes [#358](https://github.com/projen/projen/issues/358)
+* **typescript:** jest tests under `src` run from compiled javascript ([#447](https://github.com/projen/projen/issues/447)) ([9c32ffb](https://github.com/projen/projen/commit/9c32ffbd4be60796a37127413d6d38f061f54bc4))
+* **version:** enable master branch name to be configured ([#150](https://github.com/projen/projen/issues/150)) ([6df5142](https://github.com/projen/projen/commit/6df5142f577afa28017b9a33028019106bb249ad)), closes [#146](https://github.com/projen/projen/issues/146)
+
+
+### Bug Fixes
+
+* **awscdk-construct:** constructs 3.2.0 is required for latest CDK ([#291](https://github.com/projen/projen/issues/291)) ([51e34e2](https://github.com/projen/projen/commit/51e34e2291195f8c91131f5ddbb869f15089cc73)), closes [#290](https://github.com/projen/projen/issues/290)
+* **cdk8s-construct:** converts cdk8s-plus to cdk8s-plus-17 AND bumps constructs ([#329](https://github.com/projen/projen/issues/329)) ([333948e](https://github.com/projen/projen/commit/333948efc8fee629b0e0ed17648bf5fa6f81cb55)), closes [/github.com/awslabs/cdk8s/blob/master/CHANGELOG.md#100-beta1-2020-11-18](https://github.com/projen//github.com/awslabs/cdk8s/blob/master/CHANGELOG.md/issues/100-beta1-2020-11-18) [#327](https://github.com/projen/projen/issues/327)
+* **chore:** typos in VISION.md ([91785cd](https://github.com/projen/projen/commit/91785cdd02437272197c888ca9cf026b62d49f2e))
+* **cli:** broken on Windows ([#451](https://github.com/projen/projen/issues/451)) ([eb61b31](https://github.com/projen/projen/commit/eb61b315532821924b5c1b30eba9f6d2a47607b6)), closes [#448](https://github.com/projen/projen/issues/448)
+* **cli:** git commands not executed in project dir ([#443](https://github.com/projen/projen/issues/443)) ([befabfc](https://github.com/projen/projen/commit/befabfcfbc458c735f88ac3eca58332b44923809))
+* **cli:** git setup not creating initial repo ([#346](https://github.com/projen/projen/issues/346)) ([2558c5c](https://github.com/projen/projen/commit/2558c5c84bd7361e231ffb5265968a0beda7d349))
+* **cli:** improve git config detection ([#270](https://github.com/projen/projen/issues/270)) ([de229f9](https://github.com/projen/projen/commit/de229f951305e1498316856fc0737cc68c003038))
+* **cli:** new --from leads to invalid projenrc ([#385](https://github.com/projen/projen/issues/385)) ([bddf17c](https://github.com/projen/projen/commit/bddf17c63c2ced8f3a3b91a59161f5cbbeb41e9c)), closes [#384](https://github.com/projen/projen/issues/384)
+* **cli:** new --from scoped packages is broken ([#297](https://github.com/projen/projen/issues/297)) ([97bd338](https://github.com/projen/projen/commit/97bd338146b2c9e90c4114714d71979131467a02)), closes [#296](https://github.com/projen/projen/issues/296)
+* **composite-project:** prevent child NodeProjects failure during synth ([#324](https://github.com/projen/projen/issues/324)) ([ee9af0e](https://github.com/projen/projen/commit/ee9af0efa037d6dc23b43f93bd7c51a3d3bf2117)), closes [#323](https://github.com/projen/projen/issues/323)
+* **eslint:** Fixes [#273](https://github.com/projen/projen/issues/273) by adding `--no-error-on-unmatched-pattern` to match `jest --passWithNoTests` ([#274](https://github.com/projen/projen/issues/274)) ([46340a8](https://github.com/projen/projen/commit/46340a8c121aee0b58fdd98dd64fc6141e1fedf9))
+* **ignore:** "include" entries should always follow "exclude" entries ([#456](https://github.com/projen/projen/issues/456)) ([e10b776](https://github.com/projen/projen/commit/e10b776d3c6e0a7746650dfe8a7f86d994cbb36d)), closes [#453](https://github.com/projen/projen/issues/453) [#435](https://github.com/projen/projen/issues/435)
+* **java:** corrupted java directory name ([#465](https://github.com/projen/projen/issues/465)) ([7cc4b5b](https://github.com/projen/projen/commit/7cc4b5b1eb106a65e8492359f86657829f27125b))
+* **jest:** "tsConfig" option is deprecated in favor of "tsconfig" ([397088d](https://github.com/projen/projen/commit/397088d92a8b47931b733ee1e508f834fe5aa685))
+* **jsii:** allow `authorUrl` and `authorAddress` to be the same value ([#442](https://github.com/projen/projen/issues/442)) ([4a8e24e](https://github.com/projen/projen/commit/4a8e24e25c3b22500866296deae4f5e41188ac7c))
+* **new:** cannot pass string paramaeters as CLI switches ([#335](https://github.com/projen/projen/issues/335)) ([db51548](https://github.com/projen/projen/commit/db515481e14a59ec014209e082c57496a56dc769)), closes [#305](https://github.com/projen/projen/issues/305)
+* **node:** changelog entries missing ([ac1baf1](https://github.com/projen/projen/commit/ac1baf1c90103e52f73533b79288b800d162a206))
+* **node:** CI always evaluated as true ([#353](https://github.com/projen/projen/issues/353)) ([e4f0c8a](https://github.com/projen/projen/commit/e4f0c8a6c7a82d2d400766940dcea6d244a49675)), closes [#352](https://github.com/projen/projen/issues/352)
+* **node:** fixes spelling issues in comments ([#254](https://github.com/projen/projen/issues/254)) ([3a68deb](https://github.com/projen/projen/commit/3a68deb759fac51c1a43fa8a73edf3a04d89eb03))
+* **node:** invalid bumps due to lack of tags in release workflow ([41e2ae9](https://github.com/projen/projen/commit/41e2ae92439ee959b0011a96050dd2315101280c)), closes [#397](https://github.com/projen/projen/issues/397)
+* **node:** move typescript options from node project ([#446](https://github.com/projen/projen/issues/446)) ([32f13e9](https://github.com/projen/projen/commit/32f13e9bcc102cd1215c496f39c31304beb14f02))
+* **node:** rebuild-bot did not commit files ([#350](https://github.com/projen/projen/issues/350)) ([59bfb47](https://github.com/projen/projen/commit/59bfb4755f7cb74c5345eb37cdec6827ef898aba))
+* **node:** rebuild-bot does not work on forks ([edaf1c4](https://github.com/projen/projen/commit/edaf1c415503e44f1995760145996a1700b8cfcd))
+* **node:** tasks are broken for node >= 15.5.0 ([#418](https://github.com/projen/projen/issues/418)) ([17df820](https://github.com/projen/projen/commit/17df82044552564836730880223f3f2cf5daaa2a)), closes [#416](https://github.com/projen/projen/issues/416)
+* project setup fails when git config is not set ([#348](https://github.com/projen/projen/issues/348)) ([1408517](https://github.com/projen/projen/commit/1408517271ba899d31059a853470b965cdc8cd55)), closes [#344](https://github.com/projen/projen/issues/344)
+* **node:** typo in addScript docstring ([#160](https://github.com/projen/projen/issues/160)) ([d743bb9](https://github.com/projen/projen/commit/d743bb989f7222ad97e64793ac031333a2debcbf))
+* **node:** typo in help-text ([#170](https://github.com/projen/projen/issues/170)) ([688372f](https://github.com/projen/projen/commit/688372f4c1ed05e9667057077c3a50efda1c2989))
+* **node:** wrong npmIgnore field used ([#181](https://github.com/projen/projen/issues/181)) ([4bb4c9d](https://github.com/projen/projen/commit/4bb4c9dbe6df632cfdc3f06a7e209af8ba1fc7b8)), closes [#139](https://github.com/projen/projen/issues/139)
+* **react:** build error caused by API change ([#235](https://github.com/projen/projen/issues/235)) ([d2bfb25](https://github.com/projen/projen/commit/d2bfb25cc1685a90d585c6e26ffaca3f9a411760)), closes [#228](https://github.com/projen/projen/issues/228) [#229](https://github.com/projen/projen/issues/229)
+* "Cannot read property cdkVersion of undefined" ([7bdb167](https://github.com/projen/projen/commit/7bdb167ef5704737cdf0571945bc5e72e2908440))
+* **react-ts:** unused `import` line in `app.jsx` fails TS compilation ([#502](https://github.com/projen/projen/issues/502)) ([0079b82](https://github.com/projen/projen/commit/0079b8250b6c7b54034f619ccede02b36c93b6a1)), closes [#501](https://github.com/projen/projen/issues/501)
+* add missing yaml export ([#303](https://github.com/projen/projen/issues/303)) ([90c853c](https://github.com/projen/projen/commit/90c853c82ced3b560cb9381d7eb7350ddec3ce94))
+* bump task fails on subprojects ([#477](https://github.com/projen/projen/issues/477)) ([c531b80](https://github.com/projen/projen/commit/c531b80334e70743702097c77926af7e6e917df7))
+* can't override tsconfig.compilerOptions properly ([#406](https://github.com/projen/projen/issues/406)) ([47331af](https://github.com/projen/projen/commit/47331afdc72c53882bc9488d6ef36086a09f1464)), closes [#265](https://github.com/projen/projen/issues/265) [#265](https://github.com/projen/projen/issues/265)
+* cannot read property version of undefined ([4dca5be](https://github.com/projen/projen/commit/4dca5be6af24550cf645f8dd0423e644ca4848f6))
+* cdk app starter test code syntax and linting errors ([#312](https://github.com/projen/projen/issues/312)) ([e574217](https://github.com/projen/projen/commit/e5742171a97bd40797953926a0e8af181c7175a3))
+* CompositeProject tests reference unreleased projen version after bump ([#300](https://github.com/projen/projen/issues/300)) ([0c2382e](https://github.com/projen/projen/commit/0c2382eb282600dac7c8d5af1ef333054a398b9e)), closes [#289](https://github.com/projen/projen/issues/289)
+* defaults the `new` repository name to `cwd` vs `cwd`/.. ([#403](https://github.com/projen/projen/issues/403)) ([f9e32de](https://github.com/projen/projen/commit/f9e32de1707809abc6783eee3a1266064091da43))
+* duplicate "sampleCode" options in next/react projects ([0efba69](https://github.com/projen/projen/commit/0efba69b33f937572f625d6e7295b5c5705ab8cc))
+* export `readme` to allow use in external projects ([#404](https://github.com/projen/projen/issues/404)) ([3124b06](https://github.com/projen/projen/commit/3124b061c82662818f0754ea67c81a93627760d3))
+* fix sample code for specify app entrypoint ([#365](https://github.com/projen/projen/issues/365)) ([0a0797c](https://github.com/projen/projen/commit/0a0797c81c40d3398650713937832879a0fa06b0))
+* github/vscode accessors should not be available in subprojects ([#333](https://github.com/projen/projen/issues/333)) ([0a06f75](https://github.com/projen/projen/commit/0a06f751e05e0dbc81966fcc09bfcba0fe981690))
+* macro values are unquoted ([a180b6a](https://github.com/projen/projen/commit/a180b6a22b6bdf18d273f105917d4c92bc998d3b))
+* non-default assigned values are double-quoted ([52c2c9b](https://github.com/projen/projen/commit/52c2c9b20cadacf1b62797b0301e428fd653c969)), closes [#272](https://github.com/projen/projen/issues/272)
+* output to STDOUT crashes jsii languages ([#468](https://github.com/projen/projen/issues/468)) ([b2226b0](https://github.com/projen/projen/commit/b2226b07a7e1258080637a4d556e5db8c3f38ef2))
+* paths are not compatible with windows ([#175](https://github.com/projen/projen/issues/175)) ([cffdec2](https://github.com/projen/projen/commit/cffdec204ca5979808d01127876374a6927247b8))
+* start menu does not respect package manager ([#228](https://github.com/projen/projen/issues/228)) ([b466b9c](https://github.com/projen/projen/commit/b466b9cb558338986ed0b2749ad12762590e73dd)), closes [#217](https://github.com/projen/projen/issues/217)
+* subproject generated files are deleted too early ([#437](https://github.com/projen/projen/issues/437)) ([20b9537](https://github.com/projen/projen/commit/20b953778fbb8ab75d5830d6b4ca39976d3cf028)), closes [#383](https://github.com/projen/projen/issues/383)
+* synthesizing react subproject fails due to stack overflow ([#481](https://github.com/projen/projen/issues/481)) ([39b2dbe](https://github.com/projen/projen/commit/39b2dbe648dcf43d059c0a25e5a4cc8884cc4693)), closes [#480](https://github.com/projen/projen/issues/480)
+* **typescript:** compilerOptions merging properly ([#226](https://github.com/projen/projen/issues/226)) ([81b4e41](https://github.com/projen/projen/commit/81b4e41c8f16ab203179ad661c1ae3a74a969fc5)), closes [#221](https://github.com/projen/projen/issues/221)
+* tasks not executing on Windows due to invalid PATH values ([#377](https://github.com/projen/projen/issues/377)) ([5af18db](https://github.com/projen/projen/commit/5af18db8aef84c0e96832b18e6864701bee747d5)), closes [#370](https://github.com/projen/projen/issues/370)
+* YamlFile marker bug ([#436](https://github.com/projen/projen/issues/436)) ([afcc71c](https://github.com/projen/projen/commit/afcc71c326f0199ce14e9d764b9eb9001e7ae274))
+* **tasks:** logs of task execution are no longer printed ([#399](https://github.com/projen/projen/issues/399)) ([bd39607](https://github.com/projen/projen/commit/bd39607741454304984c3293b2367a6188782069))
+* **typescript:** "package" script fails with "Command "pack" not found." ([52f8b33](https://github.com/projen/projen/commit/52f8b332c3c2433ca35b8d4fd0a6a0651c8de0d3)), closes [#157](https://github.com/projen/projen/issues/157)
+* **typescript:** snapshots saved under lib ([#455](https://github.com/projen/projen/issues/455)) ([e88c14c](https://github.com/projen/projen/commit/e88c14cb75ee80243976fffa59f49190c42a5a71))
+* **typescript:** typescript uses semi colons ([#302](https://github.com/projen/projen/issues/302)) ([6f7f725](https://github.com/projen/projen/commit/6f7f7258941eb0e89c5ac7d922b541804dfb98d7)), closes [#203](https://github.com/projen/projen/issues/203) [#203](https://github.com/projen/projen/issues/203)
+
 ### [0.15.1](https://github.com/projen/projen/compare/v0.15.0...v0.15.1) (2021-01-18)
 
 ## [0.15.0](https://github.com/projen/projen/compare/v0.14.10...v0.15.0) (2021-01-18)
