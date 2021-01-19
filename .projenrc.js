@@ -64,6 +64,14 @@ const project = new JsiiProject({
   },
 });
 
+// fixes https://github.com/projen/projen/issues/498
+
+project.addFields({
+  resolutions: {
+    "xmlbuilder2/@types/node": "*"
+  }
+});
+
 // this script is what we use as the projen command in this project
 // it will compile the project if needed and then run the cli.
 new TextFile(project, 'projen.bash', {
