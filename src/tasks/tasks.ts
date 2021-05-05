@@ -1,10 +1,10 @@
-import * as path from 'path';
-import { PROJEN_DIR } from '../common';
-import { Component } from '../component';
-import { JsonFile } from '../json';
-import { Project } from '../project';
-import { TasksManifest, TaskSpec } from './model';
-import { Task, TaskOptions } from './task';
+import * as path from "path";
+import { PROJEN_DIR } from "../common";
+import { Component } from "../component";
+import { JsonFile } from "../json";
+import { Project } from "../project";
+import { TasksManifest, TaskSpec } from "./model";
+import { Task, TaskOptions } from "./task";
 
 /**
  * Defines project tasks.
@@ -16,7 +16,10 @@ export class Tasks extends Component {
   /**
    * The project-relative path of the tasks manifest file.
    */
-  public static readonly MANIFEST_FILE = path.posix.join(PROJEN_DIR, 'tasks.json');
+  public static readonly MANIFEST_FILE = path.posix.join(
+    PROJEN_DIR,
+    "tasks.json"
+  );
 
   private readonly _tasks: { [name: string]: Task };
   private readonly _env: { [name: string]: string };
