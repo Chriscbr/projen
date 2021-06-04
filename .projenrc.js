@@ -157,4 +157,7 @@ project.addTask('contributors:update', {
   exec: 'all-contributors check | grep "Missing contributors" -A 1 | tail -n1 | sed -e "s/,//g" | xargs -n1 | grep -v "\[bot\]" | xargs -n1 -I{} all-contributors add {} code',
 });
 
+project.addTask('foo');
+project.addDeps('bar');
+
 project.synth();
